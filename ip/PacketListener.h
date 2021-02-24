@@ -36,14 +36,11 @@
 */
 #ifndef INCLUDED_OSCPACK_PACKETLISTENER_H
 #define INCLUDED_OSCPACK_PACKETLISTENER_H
-#include <QObject>
 
 
 class IpEndpointName;
 
-class PacketListener : public QObject
-{
-    Q_OBJECT
+class PacketListener{
 public:
     virtual ~PacketListener() {}
     virtual void ProcessPacket( const char *data, int size, 

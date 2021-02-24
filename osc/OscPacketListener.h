@@ -39,13 +39,11 @@
 
 #include "OscReceivedElements.h"
 #include "../ip/PacketListener.h"
-#include <QObject>
 
 
 namespace osc{
 
-class OscPacketListener : public PacketListener {
-    Q_OBJECT
+class OscPacketListener : public PacketListener{ 
 protected:
     virtual void ProcessBundle( const osc::ReceivedBundle& b, 
 				const IpEndpointName& remoteEndpoint )
