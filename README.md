@@ -1,5 +1,5 @@
 # OSCPACK
-Fork from code.google.com/p/oscpack with some fixes and QObject integration
+Fork from code.google.com/p/oscpack with fixes
 
 #oscpack -- Open Sound Control packet manipulation library
 A simple C++ library for packing and unpacking OSC packets.
