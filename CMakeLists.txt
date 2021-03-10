@@ -45,7 +45,7 @@ osc/OscOutboundPacketStream.cpp
 )
 
 if(ANDROID)
-    add_library(OSCPACK SHARED ${SOURCES})
+    add_library(OSCPACK_${ANDROID_ABI} SHARED ${SOURCES})
 else()
     add_library(OSCPACK ${SOURCES})
 endif()
