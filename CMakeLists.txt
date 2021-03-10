@@ -15,7 +15,7 @@ ELSE(WIN32)
  set(IpSystemTypePath ip/posix)
 ENDIF(WIN32)
 
-ADD_LIBRARY(OSCPACK 
+set(SOURCES ${SOURCES}
 
 ip/IpEndpointName.h
 ip/IpEndpointName.cpp
@@ -43,6 +43,12 @@ osc/OscOutboundPacketStream.h
 osc/OscOutboundPacketStream.cpp
 
 )
+
+if(ANDROID)
+    add_library(OSCPACK SHARED ${SOURCES})
+else()
+    add_library(OSCPACK ${SOURCES})
+endif()
 
 IF(NOT OSC_LIB_ONLY)
   ADD_EXECUTABLE(OscUnitTests tests/OscUnitTests.cpp)
