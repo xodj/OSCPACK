@@ -10,7 +10,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 TARGET = OSCPACK
-RC_ICONS = ../MixFaceMedia/mf_icon.ico
+RC_ICONS = ../MixFaceMedia/mf_icon_16.ico
 #win32:VERSION = 1.1.0.3
 #else:VERSION = 1.1.0
 QMAKE_TARGET_COMPANY = "Ross Bencina <rossb@audiomulch.com>"
