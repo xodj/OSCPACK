@@ -10,14 +10,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 TARGET = OSCPACK
-RC_ICONS = ../MixFaceMedia/mf_icon_16.ico
-#win32:VERSION = 1.1.0.3
-#else:VERSION = 1.1.0
+win32: {
+#VERSION = 1.1.0.3
+#TARGET_EXT = .dll
 QMAKE_TARGET_COMPANY = "Ross Bencina <rossb@audiomulch.com>"
 QMAKE_TARGET_DESCRIPTION = "Open Sound Control packet manipulation library."
 QMAKE_TARGET_COPYRIGHT = "MIT License."
 QMAKE_TARGET_PRODUCT = "OSCPACK Library."
 QMAKE_TARGET_ORIGINAL_FILENAME = OSCPACK.dll
+RC_FILE += OSCPACK.rc
+} else: VERSION = 1.1.0
 
 SOURCES += \
 ip/IpEndpointName.cpp \
@@ -35,6 +37,7 @@ win32{
 }
 
 HEADERS += \
+    OSCPACK.rc \
 ip/IpEndpointName.h \
 ip/NetworkingUtils.h \
 ip/PacketListener.h \
