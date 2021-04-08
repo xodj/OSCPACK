@@ -19,7 +19,17 @@ QMAKE_TARGET_COPYRIGHT = "MIT License."
 QMAKE_TARGET_PRODUCT = "OSCPACK Library."
 QMAKE_TARGET_ORIGINAL_FILENAME = OSCPACK.dll
 RC_FILE += OSCPACK.rc
-} else: VERSION = 1.1.0
+
+SOURCES += ip/win32/NetworkingUtils.cpp
+SOURCES += ip/win32/UdpSocket.cpp
+LIBS += -lkernel32 -lws2_32 -lwinmm
+} else: {
+VERSION = 1.1.0
+
+SOURCES += ip/posix/NetworkingUtils.cpp
+SOURCES += ip/posix/UdpSocket.cpp
+target.path = /usr/lib
+}
 
 SOURCES += \
 ip/IpEndpointName.cpp \
@@ -27,14 +37,6 @@ osc/OscOutboundPacketStream.cpp \
 osc/OscPrintReceivedElements.cpp \
 osc/OscReceivedElements.cpp \
 osc/OscTypes.cpp
-
-win32{
-    SOURCES += ip/win32/NetworkingUtils.cpp
-    SOURCES += ip/win32/UdpSocket.cpp
-}else{
-    SOURCES += ip/posix/NetworkingUtils.cpp
-    SOURCES += ip/posix/UdpSocket.cpp
-}
 
 HEADERS += \
     OSCPACK.rc \
@@ -51,13 +53,3 @@ osc/OscPacketListener.h \
 osc/OscPrintReceivedElements.h \
 osc/OscReceivedElements.h \
 osc/OscTypes.h
-
-win32{
-LIBS += -lkernel32 -lws2_32 -lwinmm
-}
-
-# Default rules for deployment.
-unix {
-    target.path = /usr/lib
-}
-!isEmpty(target.path): INSTALLS += target
