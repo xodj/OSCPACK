@@ -47,8 +47,9 @@ osc/OscOutboundPacketStream.cpp
 if(ANDROID)
     add_library(OSCPACK_${ANDROID_ABI} SHARED ${SOURCES})
 else()
-    add_library(OSCPACK ${SOURCES})
+    add_library(OSCPACK SHARED ${SOURCES})
 endif()
+target_link_libraries(OSCPACK ${LIBS})
 
 IF(NOT OSC_LIB_ONLY)
   ADD_EXECUTABLE(OscUnitTests tests/OscUnitTests.cpp)
