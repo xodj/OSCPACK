@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 3.0)
-PROJECT(OSCPACK)
+cmake_minimum_required(VERSION 3.16.0)
+PROJECT(OSCPACK VERSION 1.1.0.3 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 11)
 
 OPTION(OSC_LIB_ONLY "Enable build only library" OFF)
 
@@ -9,8 +11,23 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 # the IpSystemTypePath selects the correct ones based on the current platform
 
 IF(WIN32)
- set(IpSystemTypePath ip/win32)
- set(LIBS ${LIBS} Ws2_32 winmm)
+    set(IpSystemTypePath ip/win32)
+    set(LIBS ${LIBS} Ws2_32 winmm)
+    #Place version to .rc
+    set(STR_OSC_VERSION ${OSCPACK_VERSION})
+    string(REPLACE "." "." RC_SPLIT ${STR_OSC_VERSION})
+    string(REPLACE "." ";" RC_SPLIT ${RC_SPLIT})
+    message(STATUS "OSCPACK is now: ${STR_OSC_VERSION}")
+    list(GET RC_SPLIT 0 OSC_VERSION)
+    list(GET RC_SPLIT 1 OSC_MAJOR_VERSION)
+    list(GET RC_SPLIT 2 OSC_MINOR_VERSION)
+    list(GET RC_SPLIT 3 OSC_PATCH_VERSION)
+    configure_file(OSCPACK.rc.in ${PROJECT_BINARY_DIR}/OSCPACK.rc)
+    set(SOURCES
+        ${SOURCES}
+        OSCPACK.rc.in
+        ${PROJECT_BINARY_DIR}/OSCPACK.rc
+        )
 ELSE(WIN32)
  set(IpSystemTypePath ip/posix)
 ENDIF(WIN32)
@@ -44,12 +61,24 @@ osc/OscOutboundPacketStream.cpp
 
 )
 
-if(ANDROID)
-    add_library(OSCPACK_${ANDROID_ABI} SHARED ${SOURCES})
-else()
+OPTION(OSC_LIB_STATIC "Build OSCPACK as static library" OFF)
+
+if(OSC_LIB_STATIC)
+    add_library(OSCPACK STATIC ${SOURCES})
+endif()
+
+if(NOT OSC_LIB_STATIC)
     add_library(OSCPACK SHARED ${SOURCES})
 endif()
-target_link_libraries(OSCPACK ${LIBS})
+
+if(NOT ANDROID)
+    set_target_properties(OSCPACK
+        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/Appfolder")
+endif()
+
+if(WIN32)
+target_link_libraries(OSCPACK PRIVATE ${LIBS})
+endif()
 
 IF(NOT OSC_LIB_ONLY)
   ADD_EXECUTABLE(OscUnitTests tests/OscUnitTests.cpp)
@@ -72,6 +101,7 @@ IF(NOT OSC_LIB_ONLY)
 ENDIF(NOT OSC_LIB_ONLY)
 
 if(MSVC)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
   # Force to always compile with W4
   if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
     string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
