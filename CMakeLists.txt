@@ -1,7 +1,22 @@
 cmake_minimum_required(VERSION 3.16.0)
+
 PROJECT(OSCPACK VERSION 1.1.0.3 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
+
+if(MSVC)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+    set(BUILD_SHARED_LIBS TRUE)
+  # Force to always compile with W4
+  if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+  endif()
+elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+  # Update if necessary
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-long-long -pedantic")
+endif()
 
 OPTION(OSC_LIB_ONLY "Enable build only library" OFF)
 
@@ -65,9 +80,7 @@ OPTION(OSC_LIB_STATIC "Build OSCPACK as static library" OFF)
 
 if(OSC_LIB_STATIC)
     add_library(OSCPACK STATIC ${SOURCES})
-endif()
-
-if(NOT OSC_LIB_STATIC)
+else()
     add_library(OSCPACK SHARED ${SOURCES})
 endif()
 
@@ -99,16 +112,3 @@ IF(NOT OSC_LIB_ONLY)
   ADD_EXECUTABLE(SimpleSend examples/SimpleSend.cpp)
   TARGET_LINK_LIBRARIES(SimpleSend oscpack ${LIBS})
 ENDIF(NOT OSC_LIB_ONLY)
-
-if(MSVC)
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
-  # Force to always compile with W4
-  if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-    string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-  else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-  endif()
-elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  # Update if necessary
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-long-long -pedantic")
-endif()
